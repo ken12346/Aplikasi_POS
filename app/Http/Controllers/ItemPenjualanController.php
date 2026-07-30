@@ -144,26 +144,28 @@ class ItemPenjualanController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ItemPenjualan $itempenjualan)
-    {
-        $this->authorize('delete', $ItemPenjualan);
-        
-        DB::transaction(function () use ($itempenjualan) {
-            $product = $itempenjualan->produk;
-            $sale = $itempenjualan->penjualan;
+    /**
+ * Remove the specified resource from storage.
+ */
+public function destroy(ItemPenjualan $itempenjualan)
+{
+    DB::transaction(function () use ($itempenjualan) {
 
-            // ⬆️ Kembalikan stok
-            $product->increment('stok', $itempenjualan->kuantitas);
+        $product = $itempenjualan->produk;
+        $sale = $itempenjualan->penjualan;
 
-            // ❌ Hapus item
-            $itempenjualan->delete();
+        // Kembalikan stok produk
+        $product->increment('stok', $itempenjualan->kuantitas);
 
-            // 🔄 Update total penjualan
-            $sale->update([
-                'total_pembayaran' => $sale->itemPenjualan()->sum('subtotal')
-            ]);
-        }); 
+        // Hapus item penjualan
+        $itempenjualan->delete();
 
-        return back();
-    }
+        // Update total pembayaran
+        $sale->update([
+            'total_pembayaran' => $sale->itemPenjualan()->sum('subtotal')
+        ]);
+    });
+
+    return back()->with('success', 'Item penjualan berhasil dihapus');
+}
 }

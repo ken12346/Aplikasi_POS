@@ -46,7 +46,7 @@
         <td>{{ $products->firstItem() + $loop->index }}</td>
         <td>{{ $product->user->name }}</td>
         <td>
-          <img src="{{ asset('storage/' . $product->foto) }}" width="100" class="img-thumbnail">
+         <img src="{{ asset('storage/' . $product->foto) }}" width="100" class="img-thumbnail">
         </td>
         <td>{{ $product->nama }}</td>
         <td>{{ $product->harga_beli }}</td>
