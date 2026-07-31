@@ -20,9 +20,9 @@
 
                 <li class="nav-item">
                     <a class="nav-link {{ Request::is('admin/users*') ? 'active' : '' }}"
-                       href="{{ route('admin.users') }}">
-                        Users
-                    </a>
+   href="{{ route('admin.users.index') }}">
+    Users
+</a>
                 </li>
 
                 <li class="nav-item">

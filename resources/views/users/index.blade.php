@@ -12,8 +12,7 @@
     Create
 </a>
 
-<form action="{{ route('admin.users') }}" method="GET">
-
+<form action="{{ route('admin.users.index') }}" method="GET">
 
     <div class="input-group">
         <input
@@ -23,10 +22,12 @@
             class="form-control"
             placeholder="Search username or email"
         >
+
         <button class="btn btn-outline-secondary" type="submit">
             Search
         </button>
     </div>
+
 </form>
 
 <table class="table">
@@ -39,13 +40,18 @@
             <th>Aksi</th>
         </tr>
     </thead>
+
     <tbody>
         @foreach($users as $user)
         <tr>
             <td>{{ $users->firstItem() + $loop->index }}</td>
+
             <td>{{ $user->name }}</td>
+
             <td>{{ $user->email }}</td>
+
             <td>{{ $user->role->name }}</td>
+
             <td>
                 <a href="{{ route('admin.users.edit', $user) }}"
                    class="btn btn-sm btn-warning">
@@ -55,13 +61,16 @@
                 <form action="{{ route('admin.users.destroy', $user) }}"
                       method="POST"
                       class="d-inline">
+
                     @csrf
                     @method('DELETE')
+
                     <button type="submit"
                         class="btn btn-sm btn-danger"
                         onclick="return confirm('Yakin hapus user ini?')">
                         Hapus
                     </button>
+
                 </form>
             </td>
         </tr>
