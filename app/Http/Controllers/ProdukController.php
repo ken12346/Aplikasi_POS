@@ -24,13 +24,12 @@ class ProdukController extends Controller
         $keyword = $request->input('search');
 
         $products = Produk::when($keyword, function ($query) use ($keyword) {
-                $query->where('nama', 'like', "%{$keyword}%");
-            })
-            ->orderBy('nama')
-            ->paginate(10)
-            ->withQueryString();
+            $query->where('nama', 'like', "%{$keyword}%");
+        })
+        ->orderBy('nama')
+        ->paginate(10)
+        ->withQueryString();
 
-        // Pastikan file Blade ada di resources/views/produk/index.blade.php
         return view('produk.index', compact('products'));
     }
 
@@ -40,8 +39,6 @@ class ProdukController extends Controller
     public function create()
     {
         $this->authorize('create', Produk::class);
-
-        // Pastikan file Blade ada di resources/views/produk/create.blade.php
         return view('produk.create');
     }
 
@@ -53,15 +50,14 @@ class ProdukController extends Controller
         $this->authorize('create', Produk::class);
 
         $data = [
-            'user_id'     => Auth::id(),
-            'nama'        => $request->name,
-            'harga_beli'  => $request->purchase_price,
-            'harga_jual'  => $request->selling_price,
-            'stok'        => $request->stock ?? 0,
-            'foto'        => null, // default null supaya DB tidak error
+            'user_id'      => Auth::id(),
+            'nama'         => $request->name,
+            'harga_beli'   => $request->purchase_price,
+            'harga_jual'   => $request->selling_price,
+            'stok'         => $request->stock ?? 0,
+            'foto'         => null,
         ];
 
-        // Simpan file foto jika ada
         if ($request->hasFile('foto')) {
             $data['foto'] = $request->file('foto')->store('products', 'public');
         }
@@ -74,13 +70,21 @@ class ProdukController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     * (BAGIAN INI YANG TADI HILANG DAN MENYEBABKAN ERROR 500)
+     */
+    public function show(Produk $produk)
+    {
+        $this->authorize('view', $produk);
+        return view('produk.show', compact('produk'));
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Produk $produk)
     {
         $this->authorize('update', $produk);
-
-        // Pastikan file Blade ada di resources/views/produk/edit.blade.php
         return view('produk.edit', compact('produk'));
     }
 
@@ -92,26 +96,25 @@ class ProdukController extends Controller
         $this->authorize('update', $produk);
 
         $data = [
-            'user_id'     => Auth::id(),
-            'nama'        => $request->name,
-            'harga_beli'  => $request->purchase_price,
-            'harga_jual'  => $request->selling_price,
-            'stok'        => $request->stock,
+            'user_id'    => Auth::id(),
+            'nama'       => $request->name,
+            'harga_beli' => $request->purchase_price,
+            'harga_jual' => $request->selling_price,
+            'stok'       => $request->stock,
         ];
 
         if ($request->hasFile('foto')) {
-            // Hapus foto lama jika ada
             if ($produk->foto && Storage::disk('public')->exists($produk->foto)) {
                 Storage::disk('public')->delete($produk->foto);
             }
-
             $data['foto'] = $request->file('foto')->store('products', 'public');
         }
 
         $produk->update($data);
 
+        // Diubah ke produk.index agar setelah mengedit langsung kembali ke tabel utama
         return redirect()
-            ->route('produk.edit', $produk->id)
+            ->route('produk.index')
             ->with('success', 'Product updated successfully.');
     }
 
@@ -122,6 +125,12 @@ class ProdukController extends Controller
     {
         $this->authorize('delete', $produk);
 
+        if ($produk->itemPenjualan()->count() > 0) {
+            return redirect()
+                ->route('produk.index')
+                ->with('error', 'Produk tidak dapat dihapus karena sudah digunakan dalam transaksi.');
+        }
+
         if ($produk->foto && Storage::disk('public')->exists($produk->foto)) {
             Storage::disk('public')->delete($produk->foto);
         }
@@ -130,6 +139,6 @@ class ProdukController extends Controller
 
         return redirect()
             ->route('produk.index')
-            ->with('success', 'Product deleted successfully.');
+            ->with('success', 'Produk berhasil dihapus.');
     }
 }

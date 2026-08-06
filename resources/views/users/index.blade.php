@@ -1,83 +1,342 @@
 @extends('layouts.app')
 
-@section('title', 'Users')
+@section('title', 'Data User')
 
 @section('content')
 
 @include('layouts.navbar')
 
-<h1>Halaman Users</h1>
 
-<a href="{{ route('admin.users.create') }}" class="btn btn-primary mb-3">
-    Create
-</a>
+<div class="container-fluid py-4">
 
-<form action="{{ route('admin.users.index') }}" method="GET">
 
-    <div class="input-group">
-        <input
-            type="text"
-            name="search"
-            value="{{ request('search') }}"
-            class="form-control"
-            placeholder="Search username or email"
-        >
+    {{-- Header --}}
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-        <button class="btn btn-outline-secondary" type="submit">
-            Search
-        </button>
+        <div>
+            <h3 class="fw-bold mb-1">
+                Data User
+            </h3>
+        </div>
+
+
+        <a href="{{ route('admin.users.create') }}"
+           class="btn btn-primary">
+
+            <i class="bi bi-plus-circle"></i>
+            Tambah User
+
+        </a>
+
     </div>
 
-</form>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Aksi</th>
-        </tr>
-    </thead>
 
-    <tbody>
-        @foreach($users as $user)
-        <tr>
-            <td>{{ $users->firstItem() + $loop->index }}</td>
 
-            <td>{{ $user->name }}</td>
 
-            <td>{{ $user->email }}</td>
+    <div class="card shadow-sm border-0">
 
-            <td>{{ $user->role->name }}</td>
 
-            <td>
-                <a href="{{ route('admin.users.edit', $user) }}"
-                   class="btn btn-sm btn-warning">
-                    Edit Akun
-                </a>
+        <div class="card-body">
 
-                <form action="{{ route('admin.users.destroy', $user) }}"
-                      method="POST"
-                      class="d-inline">
 
-                    @csrf
-                    @method('DELETE')
 
-                    <button type="submit"
-                        class="btn btn-sm btn-danger"
-                        onclick="return confirm('Yakin hapus user ini?')">
-                        Hapus
-                    </button>
+            {{-- Search --}}
 
-                </form>
-            </td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
+            <form action="{{ route('admin.users.index') }}"
+                  method="GET"
+                  class="mb-3">
 
-{{ $users->links() }}
+
+                <div class="row">
+
+                    <div class="col-md-5">
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+                                <i class="bi bi-search"></i>
+                            </span>
+
+
+                            <input type="text"
+                                   name="search"
+                                   value="{{ request('search') }}"
+                                   class="form-control"
+                                   placeholder="Cari nama atau email">
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-auto">
+
+                        <button class="btn btn-dark">
+                            Cari
+                        </button>
+
+                    </div>
+
+
+                </div>
+
+
+            </form>
+
+
+
+
+
+            {{-- Table --}}
+
+            <div class="table-responsive">
+
+
+                <table class="table table-hover align-middle">
+
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th width="60">
+                                No
+                            </th>
+
+                            <th>
+                                Nama
+                            </th>
+
+                            <th>
+                                Email
+                            </th>
+
+                            <th>
+                                Role
+                            </th>
+
+                            <th width="150">
+                                Aksi
+                            </th>
+
+                        </tr>
+
+
+                    </thead>
+
+
+
+                    <tbody>
+
+
+                    @forelse($users as $user)
+
+
+                        <tr>
+
+
+                            <td>
+                                {{ $users->firstItem() + $loop->index }}
+                            </td>
+
+
+
+                            <td>
+
+                                <div class="d-flex align-items-center">
+
+
+                                    <div class="user-avatar me-2">
+
+                                        {{ strtoupper(substr($user->name,0,1)) }}
+
+                                    </div>
+
+
+                                    <span>
+                                        {{ $user->name }}
+                                    </span>
+
+
+                                </div>
+
+
+                            </td>
+
+
+
+                            <td>
+                                {{ $user->email }}
+                            </td>
+
+
+
+
+                            <td>
+
+                                <span class="badge bg-info text-dark">
+
+                                    {{ ucfirst($user->role->name) }}
+
+                                </span>
+
+                            </td>
+
+
+
+
+
+                            <td>
+
+
+                                <a href="{{ route('admin.users.edit',$user) }}"
+                                   class="btn btn-sm btn-warning">
+
+                                    <i class="bi bi-pencil-square"></i>
+
+                                </a>
+
+
+
+                                <form action="{{ route('admin.users.destroy',$user) }}"
+                                      method="POST"
+                                      class="d-inline">
+
+
+                                    @csrf
+
+                                    @method('DELETE')
+
+
+                                    <button type="submit"
+                                            class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Hapus user ini?')">
+
+                                        <i class="bi bi-trash"></i>
+
+                                    </button>
+
+
+                                </form>
+
+
+                            </td>
+
+
+
+                        </tr>
+
+
+
+                    @empty
+
+
+                        <tr>
+
+                            <td colspan="5"
+                                class="text-center text-muted">
+
+                                Data user belum tersedia
+
+                            </td>
+
+                        </tr>
+
+
+                    @endforelse
+
+
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+
+
+
+            <div class="mt-3">
+
+                {{ $users->links() }}
+
+            </div>
+
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+
+
+<style>
+
+body {
+    background:#f5f7fb;
+}
+
+
+.card {
+
+    border-radius:16px;
+
+}
+
+
+.table {
+
+    margin-bottom:0;
+
+}
+
+
+.table th {
+
+    font-weight:600;
+
+}
+
+
+.user-avatar {
+
+    width:35px;
+    height:35px;
+
+    border-radius:50%;
+
+    background:#0d6efd;
+
+    color:white;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-weight:bold;
+
+}
+
+
+.btn {
+
+    border-radius:8px;
+
+}
+
+
+</style>
+
 
 @endsection

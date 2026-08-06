@@ -26,8 +26,8 @@ class Produk extends Model
     }
 
         public function itemPenjualan()
-    {
-        return $this->hasMany(\App\Models\ItemPenjualan::class);
-    }
+{
+    return $this->hasMany(ItemPenjualan::class);
+}
 
 }
