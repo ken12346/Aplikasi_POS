@@ -11,13 +11,13 @@
 
     @include('produk._form')
 
-    <button type="submit" class="btn btn-success">
+    <!-- <button type="submit" class="btn btn-success">
         Simpan
     </button>
 
     <a href="{{ route('produk.index') }}" class="btn btn-secondary">
         Kembali
-    </a>
+    </a> -->
 </form>
 
 @endsection
