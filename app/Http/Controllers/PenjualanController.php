@@ -57,8 +57,8 @@ class PenjualanController extends Controller
         $keyword = $request->input('search');
 
         $products = Produk::when($keyword, function ($query) use ($keyword) {
-                $query->where('nama', 'like', '%' . $keyword . '%');
-            })
+            $query->where('nama', 'like', '%' . $keyword . '%');
+        })
             ->orderBy('nama')
             ->get();
 
@@ -68,13 +68,24 @@ class PenjualanController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     * (FUNGSI INI YANG TADI HILANG DAN SUDAH DITAMBAHKAN)
+     */
+    public function show(Penjualan $penjualan)
+    {
+        $sale = $penjualan;
+        $sale->load('itemPenjualan.produk', 'user');
+
+        // Membuka halaman detail penjualan
+        return view('penjualan.show', compact('sale'));
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Penjualan $penjualan)
     {
         $sale = $penjualan;
-
-        abort_if($sale->status === 'COMPLETED', 403);
 
         $sale->load('itemPenjualan');
         $products = Produk::orderBy('nama')->get();
@@ -91,10 +102,6 @@ class PenjualanController extends Controller
         $request->validate([
             'payment_method' => 'required|in:CASH,QRIS'
         ]);
-
-        if ($penjualan->status !== 'OPEN') {
-            return back()->with('errors', 'Transaksi sudah diproses');
-        }
 
         if ($penjualan->itemPenjualan()->count() === 0) {
             return back()->with('errors', 'Keranjang masih kosong');
@@ -120,14 +127,6 @@ class PenjualanController extends Controller
      */
     public function destroy(Penjualan $penjualan)
     {
-        $this->authorize('delete', $penjualan);
-
-        if ($penjualan->status !== 'OPEN') {
-            return redirect()
-                ->route('penjualan.create')
-                ->with('errors', 'Transaksi sudah selesai tidak bisa dibatalkan');
-        }
-
         if ($penjualan->user_id !== Auth::id()) {
             return redirect()->route('penjualan.create');
         }
