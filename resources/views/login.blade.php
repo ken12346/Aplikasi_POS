@@ -6,7 +6,7 @@
 
 <style>
     body {
-        background: #0f172a;
+        background-color: #0f172a;
         min-height: 100vh;
     }
 
@@ -15,218 +15,156 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        padding: 20px;
     }
 
     .login-card {
-        width: 400px;
-        background: rgba(255,255,255,0.1);
-        backdrop-filter: blur(15px);
-        border-radius: 25px;
-        padding: 35px;
-        color: white;
-        box-shadow: 0 20px 40px rgba(0,0,0,.3);
-        border: 1px solid rgba(255,255,255,.2);
+        width: 100%;
+        max-width: 400px;
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 40px 30px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     }
-
 
     .logo {
-        width: 80px;
-        height: 80px;
-        background: linear-gradient(135deg,#38bdf8,#2563eb);
+        width: 70px;
+        height: 70px;
+        background: #2563eb;
         border-radius: 50%;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        margin:auto;
-        font-size:40px;
-        color:white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto 20px auto;
+        font-size: 32px;
+        color: white;
     }
-
 
     .title {
-        text-align:center;
-        margin-top:20px;
-        font-weight:700;
-        font-size:28px;
+        text-align: center;
+        font-weight: 700;
+        font-size: 24px;
+        color: #0f172a;
+        margin-bottom: 5px;
     }
-
 
     .subtitle {
-        text-align:center;
-        color:#cbd5e1;
-        margin-bottom:30px;
+        text-align: center;
+        color: #64748b;
+        margin-bottom: 30px;
+        font-size: 14px;
     }
-
 
     .form-label {
-        color:#e2e8f0;
+        color: #334155;
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 6px;
     }
-
 
     .form-control {
-        background:rgba(255,255,255,.15);
-        border:none;
-        color:white;
-        height:48px;
-        border-radius:12px;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        color: #0f172a !important;
+        height: 45px;
+        border-radius: 8px;
     }
-
-
-    .form-control::placeholder {
-        color:#cbd5e1;
-    }
-
 
     .form-control:focus {
-        background:rgba(255,255,255,.2);
-        color:white;
-        box-shadow:0 0 0 3px rgba(56,189,248,.3);
+        background: #ffffff;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
     }
-
 
     .btn-login {
-        height:48px;
-        border-radius:12px;
-        background:#38bdf8;
-        border:none;
-        font-weight:bold;
-        color:#0f172a;
-        transition:.3s;
+        height: 45px;
+        border-radius: 8px;
+        background: #2563eb;
+        border: none;
+        font-weight: 600;
+        color: white;
     }
-
 
     .btn-login:hover {
-        background:#7dd3fc;
-        transform:translateY(-3px);
+        background: #1d4ed8;
+        color: white;
     }
-
-
-    .alert {
-        border-radius:12px;
-    }
-
 
     .footer {
-        text-align:center;
-        color:#94a3b8;
-        margin-top:25px;
-        font-size:14px;
+        text-align: center;
+        color: #94a3b8;
+        margin-top: 30px;
+        font-size: 13px;
     }
-
 </style>
-
 
 <div class="login-wrapper">
 
-
     <div class="login-card">
-
 
         <div class="logo">
             <i class="bi bi-shop"></i>
         </div>
 
-
         <div class="title">
             POS SYSTEM
         </div>
-
 
         <div class="subtitle">
             Login untuk mengakses dashboard
         </div>
 
-
-
         @if ($errors->has('email'))
-
-            <div class="alert alert-danger">
-                {{ $errors->first('email') }}
-            </div>
-
+        <div class="alert alert-danger p-2 small mb-3">
+            {{ $errors->first('email') }}
+        </div>
         @endif
 
-
-
         <form action="{{ route('auth') }}" method="POST">
-
             @csrf
 
-
-
             <div class="mb-3">
-
-                <label class="form-label">
-                    Email
-                </label>
-
-                <input 
+                <label class="form-label">Email</label>
+                <input
                     type="email"
                     name="email"
                     class="form-control"
                     placeholder="admin@gmail.com"
                     value="{{ old('email') }}"
-                >
-
+                    required>
                 @error('email')
-                    <small class="text-warning">
-                        {{ $message }}
-                    </small>
+                <small class="text-danger d-block mt-1">
+                    {{ $message }}
+                </small>
                 @enderror
-
             </div>
 
-
-
-
             <div class="mb-4">
-
-                <label class="form-label">
-                    Password
-                </label>
-
-
-                <input 
+                <label class="form-label">Password</label>
+                <input
                     type="password"
                     name="password"
                     class="form-control"
                     placeholder="••••••••"
-                >
-
-
+                    required>
                 @error('password')
-                    <small class="text-warning">
-                        {{ $message }}
-                    </small>
+                <small class="text-danger d-block mt-1">
+                    {{ $message }}
+                </small>
                 @enderror
-
-
             </div>
 
-
-
-
-            <button class="btn btn-login w-100">
-
-                <i class="bi bi-box-arrow-in-right"></i>
+            <button type="submit" class="btn btn-login w-100">
                 Masuk
-
             </button>
-
-
         </form>
 
-
-
         <div class="footer">
-            © {{ date('Y') }} Aplikasi POS
+            &copy; {{ date('Y') }} Aplikasi POS
         </div>
-
 
     </div>
 
-
 </div>
-
 
 @endsection
