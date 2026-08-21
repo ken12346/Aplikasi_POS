@@ -8,26 +8,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Produk extends Model
 {
     use HasFactory;
-    
+
     protected $table = 'produk';
 
     protected $fillable = [
-    'user_id',
-    'nama',
-    'harga_beli',
-    'harga_jual',
-    'stok',
-    'foto',
+        'user_id',
+        'nama',
+        'harga_beli',
+        'harga_jual',
+        'stok',
+        'foto',
     ];
 
-        public function user ()
+    public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-        public function itemPenjualan()
-{
-    return $this->hasMany(ItemPenjualan::class);
-}
-
+    public function itemPenjualan()
+    {
+        return $this->hasMany(ItemPenjualan::class);
+    }
 }

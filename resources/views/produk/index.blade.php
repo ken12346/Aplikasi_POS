@@ -155,4 +155,24 @@
         border-radius: 10px;
     }
 </style>
+
+{{-- Script Otomatis Menghilangkan Kotak Notifikasi Berhasil --}}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Mencari elemen alert class bawaan bootstrap di halaman ini
+        var alerts = document.querySelectorAll('.alert-success, .alert');
+
+        alerts.forEach(function(successAlert) {
+            setTimeout(function() {
+                // Memberikan efek memudar halus bawaan Bootstrap
+                successAlert.classList.remove('show');
+
+                // Menghapus elemen sepenuhnya dari halaman web setelah memudar
+                setTimeout(function() {
+                    successAlert.remove();
+                }, 150);
+            }, 3000); // Otomatis hilang dalam waktu 3 detik
+        });
+    });
+</script>
 @endsection

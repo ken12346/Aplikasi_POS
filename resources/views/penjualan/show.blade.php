@@ -1,106 +1,100 @@
 @extends('layouts.app')
-
 @section('title', 'Detail Transaksi')
-
 @section('content')
 @include('layouts.navbar')
 
-<div class="container py-4">
+<div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        {{-- Mengunci lebar struk agar tidak melebar ke samping --}}
+        <div class="col-12 col-md-8 col-lg-5">
 
             {{-- Tombol Kembali --}}
-            <div class="mb-3">
-                <a href="{{ route('penjualan.index') }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left"></i> Kembali ke Riwayat
+            <div class="mb-4">
+                <a href="{{ route('penjualan.index') }}" class="btn btn-sm btn-light border px-3 text-secondary rounded-3">
+                    <i class="bi bi-arrow-left me-1"></i> Kembali ke Riwayat
                 </a>
             </div>
 
-            {{-- Nota / Struk Card --}}
-            <div class="card shadow-sm border-0 invoice-card">
-                <div class="card-body p-4 p-md-5">
+            {{-- Kartu Struk Utama --}}
+            <div class="card border-0 shadow-sm receipt-box">
+                <div class="card-body p-4 p-sm-5">
 
                     {{-- Header Struk --}}
-                    <div class="text-center mb-4 pb-4 border-bottom border-dashed">
-                        <h4 class="fw-bold text-uppercase mb-1">POS SYSTEM</h4>
-                        <p class="text-muted small mb-0">Detail Struk Transaksi Penjualan</p>
+                    <div class="text-center pb-4 border-bottom-dashed">
+                        <h4 class="fw-bold text-dark mb-1 tracking-wide">POS SYSTEM</h4>
+                        <span class="text-muted text-xs">Detail Struk Transaksi Penjualan</span>
                     </div>
 
-                    {{-- Informasi Transaksi --}}
-                    <div class="row g-3 mb-4 text-secondary small">
-                        <div class="col-6">
-                            <span class="d-block text-muted">ID TRANSAKSI:</span>
+                    {{-- Baris Info 1: ID & Tanggal --}}
+                    <div class="d-flex justify-content-between align-items-start pt-4 pb-2 text-xs-custom">
+                        <div>
+                            <span class="text-muted d-block text-uppercase">ID Transaksi</span>
                             <strong class="text-dark">#{{ $sale->id }}</strong>
                         </div>
-                        <div class="col-6 text-end">
-                            <span class="d-block text-muted">TANGGAL:</span>
-                            <strong class="text-dark">{{ $sale->created_at->translatedFormat('d F Y H:i') }}</strong>
+                        <div class="text-end">
+                            <span class="text-muted d-block text-uppercase">Tanggal</span>
+                            <strong class="text-dark">{{ $sale->created_at->translatedFormat('d M Y, H:i') }}</strong>
                         </div>
-                        <div class="col-6">
-                            <span class="d-block text-muted">NAMA KASIR:</span>
+                    </div>
+
+                    {{-- Baris Info 2: Kasir & Status --}}
+                    <div class="d-flex justify-content-between align-items-center pb-4 border-bottom-dashed text-xs-custom">
+                        <div>
+                            <span class="text-muted d-block text-uppercase">Nama Kasir</span>
                             <strong class="text-dark">{{ $sale->user->name ?? '-' }}</strong>
                         </div>
-                        <div class="col-6 text-end">
-                            <span class="d-block text-muted">STATUS:</span>
+                        <div class="text-end">
+                            <span class="text-muted d-block text-uppercase mb-1">Status</span>
                             @if($sale->status == 'COMPLETED' || $sale->status == 'selesai')
-                            <span class="badge bg-success">Selesai</span>
+                            <span class="badge bg-success rounded-pill px-2.5 py-1">Selesai</span>
                             @else
-                            <span class="badge bg-warning text-dark">{{ ucfirst($sale->status) }}</span>
+                            <span class="badge bg-warning text-dark rounded-pill px-2.5 py-1">{{ ucfirst($sale->status) }}</span>
                             @endif
                         </div>
                     </div>
 
-                    {{-- Daftar Item Yang Dibeli --}}
-                    <div class="table-responsive mb-4">
-                        <table class="table align-middle table-borderless">
-                            <thead class="table-light">
-                                <tr class="text-muted small">
-                                    <th>Nama Produk</th>
-                                    <th class="text-center">Kuantitas</th>
-                                    <th class="text-end">Harga Satuan</th>
-                                    <th class="text-end">Subtotal</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($sale->itemPenjualan as $item)
-                                <tr class="border-bottom border-light">
-                                    <td>
-                                        <span class="fw-semibold d-block text-dark">{{ $item->produk->nama ?? 'Produk Terhapus' }}</span>
-                                        <span class="text-muted small">ID: {{ $item->produk_id }}</span>
-                                    </td>
-                                    <td class="text-center fw-semibold text-secondary">
-                                        {{ $item->kuantitas }}
-                                    </td>
-                                    <td class="text-end text-secondary">
-                                        Rp {{ number_format($item->harga_jual ?? 0, 0, ',', '.') }}
-                                    </td>
-                                    <td class="text-end fw-bold text-dark">
-                                        Rp {{ number_format($item->subtotal, 0, ',', '.') }}
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted py-3">Tidak ada produk dalam transaksi ini.</td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                    {{-- Bagian Daftar Item Produk --}}
+                    <div class="py-4">
+                        <div class="d-flex justify-content-between text-muted text-xs-custom fw-bold text-uppercase pb-2 border-bottom">
+                            <span class="col-5">Nama Produk</span>
+                            <span class="col-2 text-center">Qty</span>
+                            <span class="col-5 text-end">Subtotal</span>
+                        </div>
+
+                        <div class="pt-2">
+                            @forelse($sale->itemPenjualan as $item)
+                            <div class="d-flex justify-content-between align-items-center py-2 text-xs-custom">
+                                <div class="col-5">
+                                    <span class="fw-bold text-dark d-block text-truncate">{{ $item->produk->nama ?? 'Produk Terhapus' }}</span>
+                                    <span class="text-muted small">ID: {{ $item->produk_id }}</span>
+                                </div>
+                                <div class="col-2 text-center text-dark fw-semibold">
+                                    {{ $item->kuantitas }}
+                                </div>
+                                <div class="col-5 text-end text-dark fw-bold">
+                                    Rp {{ number_format($item->subtotal, 0, ',', '.') }}
+                                </div>
+                            </div>
+                            @empty
+                            <div class="text-center py-3 text-muted small">Tidak ada produk dalam transaksi ini.</div>
+                            @endforelse
+                        </div>
                     </div>
 
-                    {{-- Total Akhir --}}
-                    <div class="row justify-content-end">
-                        <div class="col-md-6">
-                            <div class="card bg-light border-0 rounded-3 p-3">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="text-muted small">Metode Pembayaran:</span>
-                                    <span class="badge bg-primary text-uppercase">{{ $sale->metode_pembayaran }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center pt-2 border-top">
-                                    <span class="fw-bold text-secondary">TOTAL AKHIR:</span>
-                                    <span class="h4 fw-extrabold text-success mb-0">
-                                        Rp {{ number_format($sale->total_pembayaran, 0, ',', '.') }}
-                                    </span>
-                                </div>
+                    {{-- Bagian Total Akhir & Metode Pembayaran --}}
+                    <div class="pt-3 border-top-dashed">
+                        <div class="d-flex justify-content-between align-items-center mb-2 text-xs-custom">
+                            <span class="text-muted text-uppercase">Metode Pembayaran</span>
+                            <span class="badge bg-primary px-3 py-1.5 fw-bold text-uppercase">{{ $sale->metode_pembayaran }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center pt-2">
+                            <div>
+                                <span class="fw-bold text-dark text-uppercase tracking-wider text-xs-custom">Total Akhir</span>
+                            </div>
+                            <div class="text-end">
+                                <h3 class="fw-bold text-success mb-0">
+                                    Rp {{ number_format($sale->total_pembayaran, 0, ',', '.') }}
+                                </h3>
                             </div>
                         </div>
                     </div>
@@ -112,34 +106,35 @@
     </div>
 </div>
 
+{{-- CSS Custom untuk Mengunci Tata Letak --}}
 <style>
     body {
         background: #f8fafc;
     }
 
-    .invoice-card {
-        border-radius: 20px;
+    .receipt-box {
+        border-radius: 16px !important;
+        background: #ffffff;
     }
 
-    .border-dashed {
-        border-style: dashed !important;
+    .text-xs-custom {
+        font-size: 0.8rem;
     }
 
-    .table th {
-        font-weight: 600;
+    .tracking-wide {
+        letter-spacing: 1px;
     }
 
-    .badge {
-        padding: 6px 12px;
-        border-radius: 20px;
+    .tracking-wider {
+        letter-spacing: 0.05em;
     }
 
-    .btn {
-        border-radius: 8px;
+    .border-bottom-dashed {
+        border-bottom: 1px dashed #dee2e6;
     }
 
-    .fw-extrabold {
-        font-weight: 800;
+    .border-top-dashed {
+        border-top: 1px dashed #dee2e6;
     }
 </style>
 @endsection

@@ -176,4 +176,24 @@
     }
 </style>
 
+{{-- Script Otomatis Menghilangkan Kotak Hijau yang berasal dari Layout Global --}}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Mencari semua elemen alert class bawaan bootstrap di halaman ini
+        var alerts = document.querySelectorAll('.alert-success');
+
+        alerts.forEach(function(successAlert) {
+            setTimeout(function() {
+                // Berikan efek memudar bawaan Bootstrap
+                successAlert.classList.remove('show');
+
+                // Hapus elemen sepenuhnya dari halaman web setelah memudar
+                setTimeout(function() {
+                    successAlert.remove();
+                }, 150);
+            }, 3000); // 3 detik otomatis hilang
+        });
+    });
+</script>
+
 @endsection
