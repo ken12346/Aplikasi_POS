@@ -168,3 +168,23 @@
 </div>
 
 @endsection
+
+{{-- Script Otomatis Menghilangkan Kotak Hijau Sukses Logout --}}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Mencari elemen alert bawaan bootstrap di halaman login
+        var alerts = document.querySelectorAll('.alert-success, .alert');
+
+        alerts.forEach(function(successAlert) {
+            setTimeout(function() {
+                // Memberikan efek memudar halus bawaan Bootstrap
+                successAlert.classList.remove('show');
+
+                // Menghapus elemen sepenuhnya dari halaman web setelah memudar
+                setTimeout(function() {
+                    successAlert.remove();
+                }, 150);
+            }, 3000); // Kotak hijau akan otomatis hilang setelah 3 detik
+        });
+    });
+</script>
