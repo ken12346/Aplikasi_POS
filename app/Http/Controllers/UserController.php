@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -19,9 +20,9 @@ class UserController extends Controller
         $keyword = $request->input('search');
 
         $users = User::when($keyword, function ($query) use ($keyword) {
-                $query->where('name', 'like', "%{$keyword}%")
-                      ->orWhere('email', 'like', "%{$keyword}%");
-            })
+            $query->where('name', 'like', "%{$keyword}%")
+                ->orWhere('email', 'like', "%{$keyword}%");
+        })
             ->paginate(10)
             ->withQueryString();
 
@@ -86,16 +87,26 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        // hapus relasi produk jika ada
+        // 1. Hapus relasi produk dan item_penjualan terkait produk tersebut
         if (method_exists($user, 'produk')) {
             foreach ($user->produk as $produk) {
                 if (method_exists($produk, 'itemPenjualan')) {
                     $produk->itemPenjualan()->delete();
                 }
+
+                // Hapus berkas gambar produk milik user ini dari storage jika ada
+                if ($produk->foto && Storage::disk('public')->exists($produk->foto)) {
+                    Storage::disk('public')->delete($produk->foto);
+                }
             }
             $user->produk()->delete();
         }
 
+        // 2. Bersihkan data nota/transaksi di tabel penjualan yang dibuat oleh user ini
+        // Langkah ini penting untuk menghindari error integrity constraint violation 1451
+        \DB::table('penjualan')->where('user_id', $user->id)->delete();
+
+        // 3. Eksekusi penghapusan user utama
         $user->delete();
 
         return redirect()
