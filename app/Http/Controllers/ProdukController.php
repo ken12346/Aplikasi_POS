@@ -26,9 +26,9 @@ class ProdukController extends Controller
         $products = Produk::when($keyword, function ($query) use ($keyword) {
             $query->where('nama', 'like', "%{$keyword}%");
         })
-        ->orderBy('nama')
-        ->paginate(10)
-        ->withQueryString();
+            ->orderBy('nama')
+            ->paginate(10)
+            ->withQueryString();
 
         return view('produk.index', compact('products'));
     }
@@ -71,7 +71,6 @@ class ProdukController extends Controller
 
     /**
      * Display the specified resource.
-     * (BAGIAN INI YANG TADI HILANG DAN MENYEBABKAN ERROR 500)
      */
     public function show(Produk $produk)
     {
@@ -112,7 +111,6 @@ class ProdukController extends Controller
 
         $produk->update($data);
 
-        // Diubah ke produk.index agar setelah mengedit langsung kembali ke tabel utama
         return redirect()
             ->route('produk.index')
             ->with('success', 'Product updated successfully.');
@@ -125,20 +123,21 @@ class ProdukController extends Controller
     {
         $this->authorize('delete', $produk);
 
+        // 1. Hapus relasi data transaksi terlebih dahulu agar tidak terbentur constraint database
         if ($produk->itemPenjualan()->count() > 0) {
-            return redirect()
-                ->route('produk.index')
-                ->with('error', 'Produk tidak dapat dihapus karena sudah digunakan dalam transaksi.');
+            $produk->itemPenjualan()->delete();
         }
 
+        // 2. Hapus berkas gambar produk dari folder storage jika ada
         if ($produk->foto && Storage::disk('public')->exists($produk->foto)) {
             Storage::disk('public')->delete($produk->foto);
         }
 
+        // 3. Eksekusi penghapusan data produk utama
         $produk->delete();
 
         return redirect()
             ->route('produk.index')
-            ->with('success', 'Produk berhasil dihapus.');
+            ->with('success', 'Produk beserta riwayat transaksinya berhasil dihapus.');
     }
 }
