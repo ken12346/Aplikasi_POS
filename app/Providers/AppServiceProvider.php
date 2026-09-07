@@ -19,8 +19,9 @@ class AppServiceProvider extends ServiceProvider
     protected $policies = [
         User::class => DashboardPolicy::class,
         Produk::class => ProdukPolicy::class,
+        ItemPenjualan::class => ItemPenjualanPolicy::class,
         Penjualan::class => PenjualanPolicy::class,
-        ItemPenjualan::class => ItemPenjualanPolicy::class
+        
     ];
     public function register(): void
     {
