@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark shadow-lg fixed-top" style="background: linear-gradient(135deg,#1e293b,#2563eb);">
     <div class="container-fluid px-4">
-        <a class="navbar-brand fw-bold" href="{{ route('dashboard') }}">
+        <a class="navbar-brand fw-bold" href="{{ route('tentang') }}">
             <span>POS SYSTEM MASKEN</span>
         </a>
 

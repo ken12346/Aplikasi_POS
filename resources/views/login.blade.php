@@ -107,7 +107,7 @@
         </div>
 
         <div class="title">
-            POS SYSTEM
+            POS SYSTEM IKAN CUPANG
         </div>
 
         <div class="subtitle">
