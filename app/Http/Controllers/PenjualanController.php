@@ -38,8 +38,9 @@ class PenjualanController extends Controller
         return view('penjualan.index', compact('sales'));
     }
 
+
     /**
-     * Show the form for creating a new resource.
+     * Show POS form.
      */
     public function create(SearchRequest $request)
     {
@@ -64,51 +65,93 @@ class PenjualanController extends Controller
 
         $mode = 'create';
 
-        return view('penjualan.pos', compact('sale', 'products', 'mode'));
+        return view('penjualan.pos', compact(
+            'sale',
+            'products',
+            'mode'
+        ));
     }
 
+
     /**
-     * Display the specified resource.
-     * (FUNGSI INI YANG TADI HILANG DAN SUDAH DITAMBAHKAN)
+     * Display detail transaksi.
      */
     public function show(Penjualan $penjualan)
     {
         $sale = $penjualan;
-        $sale->load('itemPenjualan.produk', 'user');
 
-        // Membuka halaman detail penjualan
+        $sale->load(
+            'itemPenjualan.produk',
+            'user'
+        );
+
         return view('penjualan.show', compact('sale'));
     }
 
+
     /**
-     * Show the form for editing the specified resource.
+     * Show edit POS.
      */
     public function edit(Penjualan $penjualan)
     {
+        // Transaksi selesai tidak boleh diedit
+        if ($penjualan->status === 'COMPLETED') {
+
+            return redirect()
+                ->route('penjualan.show', $penjualan->id)
+                ->with('error', 'Transaksi sudah selesai dan tidak dapat diedit.');
+        }
+
+
         $sale = $penjualan;
 
         $sale->load('itemPenjualan');
+
         $products = Produk::orderBy('nama')->get();
+
         $mode = 'edit';
 
-        return view('penjualan.pos', compact('sale', 'products', 'mode'));
+
+        return view('penjualan.pos', compact(
+            'sale',
+            'products',
+            'mode'
+        ));
     }
 
+
     /**
-     * Update the specified resource in storage.
+     * Update transaksi / selesai pembayaran.
      */
     public function update(Request $request, Penjualan $penjualan)
     {
+        // Proteksi transaksi selesai
+        if ($penjualan->status === 'COMPLETED') {
+
+            return redirect()
+                ->route('penjualan.show', $penjualan->id)
+                ->with('error', 'Transaksi sudah selesai dan tidak dapat diubah.');
+        }
+
+
         $request->validate([
             'payment_method' => 'required|in:CASH,QRIS'
         ]);
 
+
         if ($penjualan->itemPenjualan()->count() === 0) {
-            return back()->with('errors', 'Keranjang masih kosong');
+
+            return back()
+                ->with('error', 'Keranjang masih kosong.');
         }
 
+
         DB::transaction(function () use ($penjualan, $request) {
-            $total = $penjualan->itemPenjualan()->sum('subtotal');
+
+            $total = $penjualan
+                ->itemPenjualan()
+                ->sum('subtotal');
+
 
             $penjualan->update([
                 'metode_pembayaran' => $request->payment_method,
@@ -117,31 +160,60 @@ class PenjualanController extends Controller
             ]);
         });
 
+
         return redirect()
             ->route('penjualan.index')
-            ->with('success', 'Transaksi berhasil diselesaikan');
+            ->with('success', 'Transaksi berhasil diselesaikan.');
     }
 
+
     /**
-     * Remove the specified resource from storage.
+     * Delete transaksi.
      */
     public function destroy(Penjualan $penjualan)
     {
-        if ($penjualan->user_id !== Auth::id()) {
-            return redirect()->route('penjualan.create');
+        // Transaksi selesai tidak boleh dihapus
+        if ($penjualan->status === 'COMPLETED') {
+
+            return redirect()
+                ->route('penjualan.show', $penjualan->id)
+                ->with('error', 'Transaksi selesai tidak dapat dihapus.');
         }
 
+
+        // Kasir hanya boleh hapus transaksi miliknya
+        if ($penjualan->user_id !== Auth::id()) {
+
+            return redirect()
+                ->route('penjualan.index')
+                ->with('error', 'Anda tidak memiliki akses menghapus transaksi ini.');
+        }
+
+
         DB::transaction(function () use ($penjualan) {
+
+
             foreach ($penjualan->itemPenjualan as $item) {
-                $item->produk->increment('stok', $item->kuantitas);
+
+                // kembalikan stok produk
+                $item->produk->increment(
+                    'stok',
+                    $item->kuantitas
+                );
             }
 
+
+            // hapus item transaksi
             $penjualan->itemPenjualan()->delete();
+
+
+            // hapus transaksi
             $penjualan->delete();
         });
 
+
         return redirect()
             ->route('penjualan.index')
-            ->with('success', 'Transaksi berhasil dibatalkan');
+            ->with('success', 'Transaksi berhasil dibatalkan.');
     }
 }

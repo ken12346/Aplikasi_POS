@@ -16,11 +16,15 @@
                     </a>
                 </li>
 
+                @if(auth()->user()->role->name === 'admin')
                 <li class="nav-item">
-                    <a class="nav-link px-3 rounded {{ Request::is('admin/users*') ? 'active bg-white text-primary fw-bold' : '' }}" href="{{ route('admin.users.index') }}">
+                    <a class="nav-link px-3 rounded {{ Request::is('admin/users*') ? 'active bg-white text-primary fw-bold' : '' }}"
+                        href="{{ route('admin.users.index') }}">
                         Users
                     </a>
                 </li>
+                @endif
+
 
                 <li class="nav-item">
                     <a class="nav-link px-3 rounded {{ Request::is('produk*') ? 'active bg-white text-primary fw-bold' : '' }}" href="{{ route('produk.index') }}">
