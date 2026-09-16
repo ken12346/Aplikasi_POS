@@ -29,7 +29,7 @@
                     </tr>
                     <tr>
                         <th>Alamat Lengkap</th>
-                        <td>{{ $user->alamat ?? 'Jl. Telekomunikasi No. 1, Dayeuhkolot' }}</td>
+                        <td>{{ $user->alamat ?? 'Jl.Cihaji Purbaratu' }}</td>
                     </tr>
                     <tr>
                         <th>Status Akun</th>
@@ -37,10 +37,7 @@
                             <span class="badge bg-success">Aktif</span>
                         </td>
                     </tr>
-                    <tr>
-                        <th>Tanggal Bergabung</th>
-                        <td>{{ date('d F Y') }}</td>
-                    </tr>
+                    
                 </tbody>
             </table>
         </div>
