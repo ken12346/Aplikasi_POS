@@ -5,11 +5,11 @@
 @section('content')
 @include('layouts.navbar')
 
-<div class="container-fluid mt-4">
+<div class="container produk-page py-4    ">
     {{-- Kode Alert Sukses & Error Sudah Dihapus dari Sini karena sudah ada di layouts.app --}}
 
     {{-- Header --}}
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-0">
         <div>
             <h2 class="fw-bold mb-1"> Data Produk </h2>
             <p class="text-muted mb-0"> Kelola semua data produk toko </p>
@@ -140,8 +140,8 @@
     }
 
     .product-img {
-        width: 65px;
-        height: 65px;
+        width: 80px;
+        height: 70px;
         object-fit: cover;
         border-radius: 12px;
     }

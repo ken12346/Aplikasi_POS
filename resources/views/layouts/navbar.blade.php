@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark shadow-lg fixed-top" style="background: linear-gradient(135deg,#1e293b,#2563eb);">
     <div class="container-fluid px-4">
         <a class="navbar-brand fw-bold" href="{{ route('tentang') }}">
-            <span>POS SYSTEM MASKEN</span>
+            <span>POS SYSTEM GYM KK</span>
         </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
@@ -25,12 +25,12 @@
                 </li>
                 @endif
 
-
                 <li class="nav-item">
                     <a class="nav-link px-3 rounded {{ Request::is('produk*') ? 'active bg-white text-primary fw-bold' : '' }}" href="{{ route('produk.index') }}">
                         Produk
                     </a>
                 </li>
+                
 
                 <li class="nav-item">
                     <a class="nav-link px-3 rounded {{ Request::is('penjualan*') ? 'active bg-white text-primary fw-bold' : '' }}" href="{{ route('penjualan.index') }}">

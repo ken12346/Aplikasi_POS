@@ -9,7 +9,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold mb-1">
-                Dashboard POS
+                Dashboard POS 
             </h2>
             <p class="text-muted mb-0">
                 {{ $tanggalHariIni->translatedFormat('d F Y') }}
@@ -20,7 +20,7 @@
     @can('viewAny', App\Models\User::class)
     <div class="row g-4 mb-4">
         <div class="col-md-3">
-            <div class="stat-card bg-primary">
+            <div class="stat-card bg-Warning">
                 <div>
                     <p>Total Penjualan</p>
                     <h4>
@@ -40,7 +40,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stat-card bg-primary">
+            <div class="stat-card bg-Dark">
                 <div>
                     <p>Tunai</p>
                     <h4>

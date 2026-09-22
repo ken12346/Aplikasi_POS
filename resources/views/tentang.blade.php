@@ -13,7 +13,7 @@
         </div>
         <div class="card-body">
             <!-- Pesan teks asli kamu -->
-            <p class="text-muted italic">IKAN CUPANG</p>
+            <p class="text-muted italic">GYM KK</p>
             <hr>
 
             <!-- Tabel Informasi Detail -->

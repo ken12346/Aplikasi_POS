@@ -3,6 +3,7 @@
 @section('title', 'Edit Produk')
 
 @section('content')
+@include('layouts.navbar')  
 <h4>Edit Produk</h4>
 
 <form action="{{ route('produk.update', $produk) }}" method="POST" enctype="multipart/form-data">

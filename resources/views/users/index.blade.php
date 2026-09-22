@@ -6,7 +6,7 @@
 
 @include('layouts.navbar')
 
-<div class="container-fluid py-4">
+<div class="container-fluid py-0">
 
     {{-- Header --}}
     <div class="d-flex justify-content-between align-items-center mb-4">
